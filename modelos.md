@@ -1,6 +1,5 @@
-# Modelagem conceitual do Projeto Final
+# Revisão do Modelo Conceitual e Elaboração do Modelo Lógico
 ---
-## Diagrama Entidade-Relacionamento
 ### Sistema de Gamificação Escolar — RPG da Escola
 
 ## 1. Descrição do cenário
