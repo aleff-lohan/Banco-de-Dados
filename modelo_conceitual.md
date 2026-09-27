@@ -87,3 +87,100 @@ Personagem e Missão — N:N: Um personagem pode realizar diversas missões e um
 Personagem e Conquista — N:N: Um personagem pode desbloquear várias conquistas, enquanto uma mesma conquista pode ser desbloqueada por diversos personagens. Por isso, foi utilizada a entidade associativa Personagem_Conquista, que registra também a data do desbloqueio.
 Personagem e Recompensa — N:N: Um personagem pode receber várias recompensas e uma mesma recompensa pode ser recebida por diferentes personagens. A entidade Personagem_Recompensa permite registrar essa relação e a data em que cada recompensa foi recebida.
 Ranking: O ranking não foi definido como uma entidade porque sua posição pode ser calculada a partir da experiência dos personagens. Dessa forma, não é necessário armazenar uma entidade específica apenas para representar a posição de cada jogador.
+
+## 6. Modelo conceitual revisado
+O modelo conceitual possui a relação 1:1 entre Estudante e Personagem e relações N:N entre Personagem e Missão, Conquista e Recompensa. As relações N:N utilizam entidades associativas. 
+
+Representação do modelo conceitual: 
+    ESTUDANTE ||--|| PERSONAGEM : "possui"
+    PERSONAGEM ||--o{ MISSAO_REALIZADA : "realiza"
+    MISSAO ||--o{ MISSAO_REALIZADA : "possui"
+    PERSONAGEM ||--o{ PERSONAGEM_CONQUISTA : "desbloqueia"
+    CONQUISTA ||--o{ PERSONAGEM_CONQUISTA : "recebe"
+    PERSONAGEM ||--o{ PERSONAGEM_RECOMPENSA : "recebe"
+    RECOMPENSA ||--o{ PERSONAGEM_RECOMPENSA : "possui"
+
+## 7. Modelo lógico baseado na abordagem relacional
+A seguir está a transformação das entidades e relacionamentos do modelo conceitual para relações do modelo lógico, identificando chaves primárias e estrangeiras.
+
+erDiagram
+    ESTUDANTE {
+        int id_estudante PK
+        string nome
+        string email
+        string turma
+    }
+
+    PERSONAGEM {
+        int id_personagem PK
+        string nome
+        int nivel
+        int experiencia
+        string classe
+        int id_estudante FK
+    }
+
+    MISSAO {
+        int id_missao PK
+        string titulo
+        string descricao
+        string dificuldade
+        int experiencia
+    }
+
+    CONQUISTA {
+        int id_conquista PK
+        string nome
+        string descricao
+        string requisito
+    }
+        
+    RECOMPENSA {
+        int id_recompensa PK
+        string nome
+        string descricao
+        string tipo
+    }
+
+    MISSAO_REALIZADA {
+        int id_personagem PK, FK
+        int id_missao PK, FK
+        date data_realizacao
+        string status
+    }
+
+    PERSONAGEM_CONQUISTA {
+        int id_personagem PK, FK
+        int id_conquista PK, FK
+        date data_desbloqueio
+    } 
+
+    PERSONAGEM_RECOMPENSA {
+        int id_personagem PK, FK
+        int id_recompensa PK, FK
+        date data_recebimento
+    }
+    
+    ESTUDANTE ||--|| PERSONAGEM : "possui"
+    PERSONAGEM ||--o{ MISSAO_REALIZADA : "realiza"
+    MISSAO ||--o{ MISSAO_REALIZADA : "possui"
+    PERSONAGEM ||--o{ PERSONAGEM_CONQUISTA : "desbloqueia"
+    CONQUISTA ||--o{ PERSONAGEM_CONQUISTA : "recebe"
+    PERSONAGEM ||--o{ PERSONAGEM_RECOMPENSA : "recebe"
+    RECOMPENSA ||--o{ PERSONAGEM_RECOMPENSA : "possui"
+
+## 8. Transformação do modelo conceitual para o modelo lógico
+- Entidade Estudante -> Relação ESTUDANTE
+- Entidade Personagem -> Relação PERSONAGEM
+- Entidade Missão -> Relação MISSAO
+- Entidade Conquista -> Relação CONQUISTA
+- Entidade Recompensa -> Relação RECOMPENSA
+- Atributos -> Atributos das relações
+- Chave da entidade -> Chave primária (PK)
+- Estudante - Personagem 1:1 -> FK id_estudante em PERSONAGEM, com UNIQUE
+- Personagem - Missão N:N -> Relação associativa MISSAO_REALIZADA
+- Personagem - Conquista N:N -> Relação associativa PERSONAGEM_CONQUISTA
+- Personagem - Recompensa N:N -> Relação associativa PERSONAGEM_RECOMPENSA
+
+## 9. Coerência entre as partes do projeto
+A estrutura mantém a coerência entre o cenário, as regras, o modelo conceitual e o modelo lógico. As entidades presentes no cenário aparecem no modelo, os relacionamentos N:N são representados por relações associativas e as chaves estrangeiras estabelecem as referências necessárias. O ranking permanece como informação calculada a partir da experiência dos personagens, não sendo necessária uma relação específica para armazenar sua posição.
