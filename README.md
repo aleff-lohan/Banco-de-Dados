@@ -1,4 +1,4 @@
-# Banco de Dados
+# Banco de Dados: Sistema de Gamificação Escolar
 ---
 ### Integrantes:
 - Aleff Lohan
