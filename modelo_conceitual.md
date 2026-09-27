@@ -5,10 +5,15 @@
 
 ## 1. Descrição do cenário
 A Escola de Flores do Campo deseja criar um sistema de gamificação para tornar a realização das atividades escolares mais dinâmica e motivadora para os estudantes. A proposta é transformar atividades, desafios e missões relacionadas à escola em elementos de um jogo de RPG, permitindo que os alunos acompanhem seu progresso enquanto realizam suas tarefas.
+
 No sistema, cada Estudante será cadastrado com um id_estudante, nome, e-mail e turma. Cada estudante terá um personagem dentro do jogo, que será utilizado para representar sua evolução. O Personagem será identificado por um id_personagem e possuirá informações como nome, nível, experiência e classe. Cada estudante poderá possuir apenas um personagem, e cada personagem pertencerá a um único estudante.
+
 As atividades e desafios serão representados por Missões. Cada missão possuirá um id_missao, título, descrição, dificuldade e quantidade de experiência oferecida como recompensa. Um personagem poderá realizar diversas missões, enquanto uma mesma missão poderá ser realizada por diversos personagens. Para registrar essas realizações, serão armazenadas informações como a data de realização e o status da missão.
+
 Conforme os estudantes avançam no sistema, poderão desbloquear Conquistas. Cada conquista possuirá um id_conquista, nome, descrição e requisito. Um personagem poderá desbloquear várias conquistas, e uma mesma conquista poderá ser desbloqueada por vários personagens. O sistema deverá registrar também a data em que cada conquista foi desbloqueada.
+
 Além disso, os personagens poderão receber Recompensas por completar determinadas missões ou alcançar objetivos. Cada recompensa possuirá um id_recompensa, nome, descrição e tipo. Um personagem poderá receber diversas recompensas, e uma mesma recompensa poderá ser recebida por diferentes personagens. Para cada recebimento, será registrada a data de recebimento.
+
 O sistema também permitirá acompanhar a posição dos estudantes por meio de um ranking, organizado de acordo com a quantidade de experiência acumulada pelos personagens. A posição no ranking não precisará ser cadastrada separadamente, pois poderá ser calculada pelo sistema com base na experiência de cada personagem.
 
 ## 2. Regras do negócio
