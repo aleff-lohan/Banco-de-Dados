@@ -1,52 +1,46 @@
-USE rpg_escola;
+import random
 
--- 1. Inserir Estudantes
-INSERT INTO estudante (nome, email, turma) VALUES
-('Lucas Silva', 'lucas.silva@escola.com', '1º Ano A'),
-('Mariana Costa', 'mariana.costa@escola.com', '1º Ano A'),
-('Gabriel Santos', 'gabriel.santos@escola.com', '2º Ano B'),
-('Beatriz Lima', 'beatriz.lima@escola.com', '3º Ano C');
+primeiros = ["Lucas", "Mariana", "Gabriel", "Beatriz", "Pedro", "Ana", "Matheus", "Sofia", "Thiago", "Camila", "Rafael", "Lara", "Felipe", "Julia", "Enzo"]
+sobrenomes = ["Silva", "Costa", "Santos", "Lima", "Oliveira", "Souza", "Rodrigues", "Ferreira", "Almeida", "Pereira", "Carvalho", "Gomes"]
+turmas = ["1º Ano A", "1º Ano B", "2º Ano A", "2º Ano B", "3º Ano A", "3º Ano C"]
+classes = ["Guerreiro", "Maga", "Ladino", "Paladino", "Arqueiro", "Bardo", "Clérigo", "Druida"]
+rpg_prefixos = ["Aethelgard", "Aria", "Shadow", "Valerius", "Kaelen", "Thorne", "Eldrin", "Lyra", "Vaelen", "Zephyr"]
 
--- 2. Inserir Personagens (Relacionamento 1:1)
-INSERT INTO personagem (nome, nivel, experiencia, classe, id_estudante) VALUES
-('Aethelgard', 3, 350, 'Guerreiro', 1),
-('Aria', 5, 820, 'Maga', 2),
-('Shadow', 2, 210, 'Ladino', 3),
-('Valerius', 4, 600, 'Paladino', 4);
+# 1. Gerar 02_seed_estudantes.sql
+with open("02_seed_estudantes.sql", "w", encoding="utf-8") as f:
+    f.write("USE rpg_escola;\n\nINSERT INTO estudante (id_estudante, nome, email, turma) VALUES\n")
+    estudantes = []
+    for i in range(1, 2001):
+        nome = f"{random.choice(primeiros)} {random.choice(sobrenomes)}"
+        email = f"estudante_{i}@escola.com"
+        turma = random.choice(turmas)
+        estudantes.append(f"({i}, '{nome}', '{email}', '{turma}')")
+    f.write(",\n".join(estudantes) + ";\n")
 
--- 3. Inserir Missões
-INSERT INTO missao (titulo, descricao, dificuldade, experiencia) VALUES
-('Desafio de Álgebra', 'Resolver a lista de 10 exercícios de equações do 2º grau.', 'Média', 150),
-('Leitura Clássica', 'Ler 2 capítulos do livro de Literatura e fazer um resumo.', 'Fácil', 100),
-('Maratona de História', 'Completar o questionário sobre a Segunda Guerra Mundial.', 'Difícil', 300),
-('Feira de Ciências', 'Apresentar o experimento de química na feira escolar.', 'Lendária', 500);
+# 2. Gerar 03_seed_personagens.sql
+with open("03_seed_personagens.sql", "w", encoding="utf-8") as f:
+    f.write("USE rpg_escola;\n\nINSERT INTO personagem (id_personagem, nome, nivel, experiencia, classe, id_estudante) VALUES\n")
+    personagens = []
+    for i in range(1, 2001):
+        nome_p = f"{random.choice(rpg_prefixos)}_{i}"
+        nivel = random.randint(1, 20)
+        exp = nivel * 150 + random.randint(0, 100)
+        classe = random.choice(classes)
+        personagens.append(f"({i}, '{nome_p}', {nivel}, {exp}, '{classe}', {i})")
+    f.write(",\n".join(personagens) + ";\n")
 
--- 4. Inserir Conquistas e Recompensas
-INSERT INTO conquista (nome, descricao, requisito) VALUES
-('Primeiros Passos', 'Concluiu a primeira missão no sistema.', 'Completar 1 missão'),
-('Mestre dos Cálculos', 'Concluiu 5 missões da disciplina de Matemática.', 'Completar 5 missões de Matemática'),
-('Sabedoria Antiga', 'Alcançou o nível 5 com o personagem.', 'Atingir o Nível 5');
+# 3. Gerar 04_seed_progresso.sql (Missões Realizadas, Conquistas e Recompensas)
+with open("04_seed_progresso.sql", "w", encoding="utf-8") as f:
+    f.write("USE rpg_escola;\n\nINSERT INTO missao_realizada (id_personagem, id_missao, status) VALUES\n")
+    missoes = []
+    status_lst = ['Concluída', 'Em Andamento', 'Falhou']
+    for i in range(1, 2001):
+        m_id = random.randint(1, 4)
+        st = random.choice(status_lst)
+        missoes.append(f"({i}, {m_id}, '{st}')")
+    f.write(",\n".join(missoes) + ";\n")
 
-INSERT INTO recompensa (nome, descricao, tipo) VALUES
-('Ponto Extra em Matemática', 'Adiciona 0,5 ponto na média da unidade.', 'Nota'),
-('Passe Livre de Dever', 'Isenção de uma tarefa de casa à escolha.', 'Privilégio'),
-('Medalha de Honra', 'Broche físico entregue pela direção escolar.', 'Item Físico');
-
--- 5. Registrar Missões Realizadas
-INSERT INTO missao_realizada (id_personagem, id_missao, status) VALUES
-(1, 1, 'Concluída'),
-(1, 2, 'Concluída'),
-(2, 1, 'Concluída'),
-(2, 3, 'Concluída'),
-(2, 4, 'Concluída'),
-(3, 2, 'Em Andamento'),
-(4, 3, 'Concluída');
-
--- 6. Registrar Conquistas Desbloqueadas e Recompensas Recebidas
-INSERT INTO personagem_conquista (id_personagem, id_conquista) VALUES
-(1, 1),
-(2, 1),
-(2, 3);
-
-INSERT INTO personagem_recompensa (id_personagem, id_recompensa) VALUES
-(2, 1);
+print("Arquivos divididos com sucesso:")
+print(" - 02_seed_estudantes.sql (2.000 estudantes)")
+print(" - 03_seed_personagens.sql (2.000 personagens)")
+print(" - 04_seed_progresso.sql (2.000 missões registradas)")
