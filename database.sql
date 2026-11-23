@@ -1,18 +1,8 @@
--- ============================================================================
--- BANCO DE DADOS: rpg_escola  (versão evoluída - branch projeto-dados-final)
--- SGBD: MySQL 8.0.16 ou superior (necessário para o CHECK ser aplicado)
--- CONTEÚDO: 1. Estrutura | 2. Catálogos | 3. Massa de dados | 4. Conferência
--- Executável a partir de um banco vazio:  mysql -u usuario -p < database.sql
--- ============================================================================
-
 CREATE DATABASE IF NOT EXISTS rpg_escola
     CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci;
 USE rpg_escola;
 SET NAMES utf8mb4;
 
--- ----------------------------------------------------------------------------
--- PARTE 1: ESTRUTURA
--- ----------------------------------------------------------------------------
 SET FOREIGN_KEY_CHECKS = 0;
 DROP TABLE IF EXISTS historico_experiencia;
 DROP TABLE IF EXISTS personagem_recompensa;
@@ -38,7 +28,7 @@ CREATE TABLE personagem (
     nivel       INT NOT NULL DEFAULT 1,
     experiencia INT NOT NULL DEFAULT 0,
     classe      VARCHAR(50)  NOT NULL,
-    id_estudante INT NOT NULL UNIQUE,                 -- garante o 1:1 com estudante
+    id_estudante INT NOT NULL UNIQUE,       
     CONSTRAINT chk_personagem_nivel CHECK (nivel >= 1),
     CONSTRAINT chk_personagem_exp   CHECK (experiencia >= 0),
     CONSTRAINT fk_personagem_estudante FOREIGN KEY (id_estudante)
@@ -51,7 +41,7 @@ CREATE TABLE missao (
     descricao TEXT,
     dificuldade ENUM('Fácil','Média','Difícil','Lendária') NOT NULL,
     experiencia INT NOT NULL,
-    prazo_dias  INT NOT NULL,                         -- NOVO: prazo para concluir
+    prazo_dias  INT NOT NULL,    
     CONSTRAINT chk_missao_exp   CHECK (experiencia > 0),
     CONSTRAINT chk_missao_prazo CHECK (prazo_dias > 0)
 );
@@ -61,17 +51,16 @@ CREATE TABLE conquista (
     nome      VARCHAR(100) NOT NULL,
     descricao TEXT,
     requisito VARCHAR(255),
-    categoria ENUM('Missões','Progressão') NOT NULL   -- NOVO
+    categoria ENUM('Missões','Progressão') NOT NULL   
 );
 
 CREATE TABLE recompensa (
     id_recompensa INT AUTO_INCREMENT PRIMARY KEY,
     nome      VARCHAR(100) NOT NULL,
     descricao TEXT,
-    tipo ENUM('Nota','Privilégio','Item Físico') NOT NULL   -- agora ENUM
+    tipo ENUM('Nota','Privilégio','Item Físico') NOT NULL   
 );
 
--- data_registro -> data_inicio; NOVA data_conclusao (NULL enquanto em andamento)
 CREATE TABLE missao_realizada (
     id_missao_realizada INT AUTO_INCREMENT PRIMARY KEY,
     id_personagem INT NOT NULL,
@@ -107,7 +96,6 @@ CREATE TABLE personagem_recompensa (
     FOREIGN KEY (id_recompensa) REFERENCES recompensa(id_recompensa) ON DELETE CASCADE
 );
 
--- NOVA: registra cada ganho ou perda de XP (histórico / ranking por período)
 CREATE TABLE historico_experiencia (
     id_historico INT AUTO_INCREMENT PRIMARY KEY,
     id_personagem INT NOT NULL,
@@ -124,11 +112,6 @@ CREATE TABLE historico_experiencia (
 
 CREATE INDEX idx_mr_status_data ON missao_realizada (status, data_conclusao);
 CREATE INDEX idx_hx_data ON historico_experiencia (data_hora);
-
-
--- ----------------------------------------------------------------------------
--- PARTE 2: DADOS (catálogos)
--- ----------------------------------------------------------------------------
 
 INSERT INTO missao (id_missao, titulo, descricao, dificuldade, experiencia, prazo_dias) VALUES
 (1, 'Desafio de Álgebra', 'Resolver lista de equações do 2º grau.', 'Média', 150, 7),
@@ -188,11 +171,6 @@ INSERT INTO recompensa (id_recompensa, nome, descricao, tipo) VALUES
 (4, 'Escolha do Assento', 'Escolher o assento por uma semana.', 'Privilégio'),
 (5, 'Vale-Lanche', 'Vale para a cantina da escola.', 'Item Físico'),
 (6, 'Meio Ponto em Prova', '0,5 ponto em uma prova à escolha.', 'Nota');
-
--- ----------------------------------------------------------------------------
--- PARTE 3: DADOS (estudantes, personagens e operações)
--- Base reduzida: 168 estudantes e personagens, com todas as suas operações.
--- ----------------------------------------------------------------------------
 
 INSERT INTO estudante (id_estudante, nome, email, turma) VALUES
 (1, 'Rafael Costa', 'estudante_1@escola.com', '1º Ano A'),
@@ -3271,9 +3249,6 @@ INSERT INTO historico_experiencia (id_historico, id_personagem, id_missao_realiz
 (1189, 168, NULL, 'Conquista', 50, '2026-10-02 22:18:01'),
 (1190, 168, NULL, 'Bônus', 25, '2026-03-16 16:45:04');
 
--- ----------------------------------------------------------------------------
--- PARTE 4: CONFERÊNCIA (registros por tabela e total)
--- ----------------------------------------------------------------------------
 SELECT 'estudante' AS tabela, COUNT(*) AS registros FROM estudante
 UNION ALL SELECT 'personagem', COUNT(*) FROM personagem
 UNION ALL SELECT 'missao', COUNT(*) FROM missao

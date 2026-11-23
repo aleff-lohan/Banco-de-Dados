@@ -1,7 +1,5 @@
--- Relatórios do RPG da Escola (MySQL 8). Execute após o database.sql.
 USE rpg_escola;
 
--- Relatório 1: Ranking de personagens por XP em um período
 SELECT e.turma,
        p.nome         AS personagem,
        p.classe,
@@ -15,7 +13,6 @@ GROUP BY p.id_personagem, p.nome, p.classe, e.turma
 ORDER BY xp_no_periodo DESC, p.id_personagem
 LIMIT 10;
 
--- Relatório 2: Desempenho por dificuldade da missão
 SELECT m.dificuldade,
        COUNT(*)                          AS total_tentativas,
        SUM(mr.status = 'Concluída')      AS concluidas,
@@ -31,7 +28,6 @@ GROUP BY m.dificuldade
 HAVING COUNT(*) >= 20
 ORDER BY FIELD(m.dificuldade, 'Fácil', 'Média', 'Difícil', 'Lendária');
 
--- Relatório 3: Missões concluídas dentro e fora do prazo, por mês
 SELECT DATE_FORMAT(mr.data_conclusao, '%Y-%m') AS mes,
        COUNT(*) AS concluidas,
        SUM(CASE WHEN DATEDIFF(mr.data_conclusao, mr.data_inicio) <= m.prazo_dias
